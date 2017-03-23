@@ -9,14 +9,9 @@ var Bricklayer;
     function toArray(arrayLike) {
         return [].slice.call(arrayLike);
     }
+    var event = document.createEvent('CustomEvent');
     function triggerEvent(el, eventName, data) {
-        if (window["CustomEvent"]) {
-            var event = new CustomEvent(eventName, { detail: data });
-        }
-        else {
-            var event = document.createEvent('CustomEvent');
-            event.initCustomEvent(eventName, true, true, data);
-        }
+        event.initCustomEvent(eventName, true, true, data);
         return el.dispatchEvent(event);
     }
     var DEFAULTS = {
@@ -143,9 +138,6 @@ var Bricklayer;
         Container.prototype.reorderElements = function (columnCount) {
             var _this = this;
             if (columnCount === void 0) { columnCount = 1; }
-            if (columnCount == Infinity || columnCount < 1) {
-                columnCount = 1;
-            }
             var elements = toArray(this.elements).map(function (item) {
                 var element = item.parentNode ? item.parentNode.removeChild(item) : item;
                 return element;
@@ -166,6 +158,9 @@ var Bricklayer;
         Container.prototype.getColumnCount = function () {
             var containerWidth = this.element.offsetWidth;
             var columnWidth = this.ruler.getWidth();
+            if (columnWidth == 0) {
+                return 1;
+            }
             return Math.round(containerWidth / columnWidth);
         };
         Container.prototype.applyPosition = function (pos, column, item) {

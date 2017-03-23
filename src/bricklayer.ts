@@ -10,13 +10,10 @@ module Bricklayer {
     return [].slice.call(arrayLike)
   }
 
+  var event = document.createEvent('CustomEvent');
+
   function triggerEvent(el, eventName : string, data) {
-    if (window["CustomEvent"]) {
-      var event = new CustomEvent(eventName, {detail: data});
-    } else {
-      var event = document.createEvent('CustomEvent');
-      event.initCustomEvent(eventName, true, true, data);
-    }
+    event.initCustomEvent(eventName, true, true, data);
     return el.dispatchEvent(event)
   }
 
